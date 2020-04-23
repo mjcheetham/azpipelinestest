@@ -1,0 +1,31 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  configuration: 'Release'
+
+steps:
+  - task: UseDotNet@2
+    displayName: Use .NET Core SDK 3.1.x
+    inputs:
+      packageType: sdk
+      version: 3.1.x
+
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      command: build
+      projects: 'mattche-test.sln'
+      arguments: '--configuration=$(configuration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      projects: 'mattche-test.sln'
+      arguments: '--configuration=$(configuration)'
+      publishTestResults: true
+      testRunTitle: 'Unit tests'
